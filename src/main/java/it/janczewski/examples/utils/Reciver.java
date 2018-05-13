@@ -22,7 +22,18 @@ public class Reciver implements ExceptionListener{
                 if (message instanceof TextMessage) {
                     TextMessage textMessage = (TextMessage) message;
                     String text = textMessage.getText();
-                   logger.info("Received TextMessage object: " + text);
+                    logger.info("Received TextMessage object: " + text);
+                    
+                    logger.info("Received TextMessage ID: " + message.getJMSMessageID());
+                    // We get the Messsage Id and can use it
+                    
+                    final TextMessage replyMessage = session.createTextMessage("Result");
+                    replyMessage.setJMSCorrelationID(message.getJMSMessageID());
+                    
+                    final MessageProducer producer = session.createProducer(message.getJMSReplyTo());
+                    logger.info("Sending reply to " + message.getJMSReplyTo());
+                    producer.send(replyMessage);
+                
                 } else {
                     logger.info("Received other object type with message: " + message);
                 }

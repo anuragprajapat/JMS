@@ -26,6 +26,9 @@ public class Sender {
                 producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
                 String text = "Hello from: " + taskName + " : " + this.hashCode();
                 TextMessage message = session.createTextMessage(text);
+                
+                message.setJMSReplyTo(destination);
+                
                 logger.info("Sent message hash code: "+ message.hashCode() + " : " + taskName);
                 producer.send(message);
                 session.close();
